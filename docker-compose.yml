@@ -1,0 +1,16 @@
+#version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    container_name: java_jdbc2
+    restart: always
+    environment:
+      POSTGRES_USER: fmartins  # seu usuário do banco
+      POSTGRES_PASSWORD: masterkey # sua senha do banco
+      POSTGRES_DB: java_jdbc2 # nome do banco padrão criado
+    ports:
+      - "5434:5432" # mapeando a porta 5433 do host para 5432 do container
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:

@@ -14,8 +14,52 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+
+    <!--PostgreSQL JDBC Driver Postgresql  https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.7.7</version>
+    </dependency>
+
+    <!--junit maven - JUnit is a unit testing framework to write and run repeatable automated tests on Java https://mvnrepository.com/artifact/junit/junit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!--log4j-core maven -Implementation for Apache Log4J, a highly configurable logging tool that focuses on performance and low garbage generation. https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.25.1</version>
+    </dependency>
+
+
+
   </dependencies>
   <build>
+    <plugins>
+<!-- exec-maven-plugin    serve para em geral para facilitar integração para rodar testes automatizados.-->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.1</version>
+      </plugin>
+
+      <!--maven-compiler-plugin (Serve para configurar qual versão do Java o Maven deve usar para compilar o seu código.) https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+        <configuration>
+          <source>17</source>
+          <target>17</target>
+        </configuration>
+      </plugin>
+    </plugins>
     <finalName>java-JDBC2</finalName>
   </build>
 </project>
