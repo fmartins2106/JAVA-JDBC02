@@ -18,11 +18,11 @@ public class RepositorioProdutor {
     private static final Logger log = LogManager.getLogger(RepositorioProdutor.class);
 
     public static List<Produtor> pesquisaPorNome(String nome){
-        log.info("Pesquisa pelo nome do produto '{}'",nome);
-        String sql = "SELECT * FROM anime_store.producer WHERE nome LIKE ?;";
+        log.info("Pesquisa pelo nome do produtor '{}'",nome);
+        String sql = "SELECT * FROM anime_store.produtor WHERE nome LIKE ?";
         List<Produtor> produtores = new ArrayList<>();
         try (Connection connection = ConnectionFactory.getConnection();
-            PreparedStatement ps = pesquisaNomePreparedStatement(connection,nome,sql);
+            PreparedStatement ps = pesquisaNomePreparedStatement(connection,sql,nome);
             ResultSet rs = ps.executeQuery()){
             while (rs.next()){
                 Produtor produtor = Produtor.ProducerBuilder
@@ -31,15 +31,16 @@ public class RepositorioProdutor {
                         .nome(rs.getString("nome"))
                         .build();
                 produtores.add(produtor);
+
             }
         }catch (SQLException e){
-            log.error("Erro na pesquisa.",e);
+            log.error("Erro na pesquisa do nome.",e);
             e.printStackTrace();
         }
         return produtores;
     }
 
-    public static PreparedStatement pesquisaNomePreparedStatement(Connection connection, String nome, String sql) throws SQLException{
+    public static PreparedStatement pesquisaNomePreparedStatement(Connection connection, String sql, String nome) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1,String.format("%%%s%%",nome));
         return ps;
