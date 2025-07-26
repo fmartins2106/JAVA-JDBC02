@@ -1,14 +1,22 @@
 package jdbcCrud.dominio;
 
 public class Produtor {
-    public final Integer id_produtor;
-    public final String nome;
+    private final Integer id_produtor;
+    private final String nome;
 
     private Produtor(Integer id_produtor, String nome) {
         validacaoIDProdutor(id_produtor);
         validacaoNomeProdutor(nome);
         this.id_produtor = id_produtor;
         this.nome = nome;
+    }
+
+    public Integer getId_produtor() {
+        return id_produtor;
+    }
+
+    public String getNome() {
+        return nome;
     }
 
     public static void validacaoIDProdutor(Integer id_produtor){
@@ -45,8 +53,6 @@ public class Produtor {
         }
 
         public Produtor build() {
-            Produtor.validacaoIDProdutor(this.id_produtor);
-            Produtor.validacaoNomeProdutor(this.nome);
             return new Produtor(id_produtor,nome);
         }
     }
