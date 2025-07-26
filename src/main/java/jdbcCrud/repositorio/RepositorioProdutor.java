@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class RepositorioProdutor {
@@ -73,25 +74,76 @@ public class RepositorioProdutor {
 
     public static void save(Produtor produtor) {
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement ps = preparedStatementSalvar(connection, produtor)) {
+             PreparedStatement ps = preparedStatementSalvar2(connection, produtor)) {
             int nomeInserido = ps.executeUpdate();
-            if (nomeInserido == 0){
-                log.warn("Nenhuma linha foi inseriada para o produtor '{}'",produtor.getNome());
+            if (nomeInserido == 0) {
+                log.warn("Nenhuma linha foi inseriada para o produtor '{}'", produtor.getNome());
                 return;
             }
-            log.info("Produtor com nome '{}' cadastrado com sucesso.",produtor.getNome());
+            log.info("Produtor com nome '{}' cadastrado com sucesso.", produtor.getNome());
         } catch (SQLException e) {
             log.error("Erro ao salvar nome de produtor '{}'", produtor.getId_produtor(), e);
             e.printStackTrace();
         }
     }
 
-    public static PreparedStatement preparedStatementSalvar(Connection connection, Produtor produtor) throws SQLException {
+    public static PreparedStatement preparedStatementSalvar2(Connection connection, Produtor produtor) throws SQLException {
         String sql = "INSERT INTO anime_store.produtor (name) values (?);";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, produtor.getNome());
         return ps;
     }
+
+    public static Optional<Produtor> pesquisaPeloId(int id) {
+        log.info("Pesquisa pelo #ID: '{}'", id);
+        String sql = "SELECT * FROM anime_store.produtor WHERE id_produtor = ?;";
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementPesquisaPeloID(connection,sql,id);
+            ResultSet rs = ps.executeQuery()) {
+            if (!rs.next()) return Optional.empty();
+            return Optional.of(Produtor.ProducerBuilder
+                    .aProducer()
+                    .id_produtor(rs.getInt("id"))
+                    .nome(rs.getString("nome"))
+                    .build());
+        }catch (SQLException e){
+            log.error("Erro na pesquisa pelo #ID '{}'",id,e);
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public static PreparedStatement preparedStatementPesquisaPeloID(Connection connection, String sql, int id) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, id);
+        return ps;
+    }
+
+    public static void update(Produtor produtor){
+        log.info("Atualização dos dados do produtor: '{}'",produtor.getNome());
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementAtualizacao(connection,produtor)){
+            int linhasAfetadas = ps.executeUpdate();
+            if (linhasAfetadas > 0){
+                log.info("Dados do produtor #ID: '{}' alterados com sucesso.",produtor.getId_produtor());
+                return;
+            }
+            log.warn("Erro ao atualizar os dados produtor #ID: '{}'",produtor.getId_produtor());
+        }catch (SQLException e){
+            log.error("Erro de atualização de dados do produtor '{}' no bando de dados.",produtor.getId_produtor(),e);
+            e.printStackTrace();
+        }
+    }
+    
+    public static PreparedStatement preparedStatementAtualizacao(Connection connection, Produtor produtor) throws SQLException{
+        String sql = "UPDATE anime_store.produtor  SET nome = ? WHERE id = ?";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,produtor.getNome());
+        ps.setInt(2,produtor.getId_produtor());
+        return ps;
+    }
+
+
 
 
 
