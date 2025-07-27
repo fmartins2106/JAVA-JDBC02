@@ -119,7 +119,7 @@ public class RepositorioProdutor {
         return ps;
     }
 
-    public static void update(Produtor produtor){
+    public static void atualizacao(Produtor produtor){
         log.info("Atualização dos dados do produtor: '{}'",produtor.getNome());
         try (Connection connection = ConnectionFactory.getConnection();
             PreparedStatement ps = preparedStatementAtualizacao(connection,produtor)){
