@@ -144,6 +144,133 @@ public class RepositorioProdutor {
     }
 
 
+//    ___________________________________________________________________________________________________________________________-
+    public static List<Produtor> pesquisaPorNome2(String nome){
+        log.info("Pesquisa pelo nome do produtor '{}'",nome);
+        List<Produtor> produtors = new ArrayList<>();
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementPesquisaPeloNome2(connection,nome);
+            ResultSet rs = ps.executeQuery()){
+            while (rs.next()){
+                Produtor produtor = Produtor.ProducerBuilder.aProducer()
+                        .id_produtor(rs.getInt("id"))
+                        .nome(rs.getString("nome"))
+                        .build();
+                produtors.add(produtor);
+            }
+        }catch (SQLException e){
+            log.error("Erro na pesqui do nome produtor '{}' no bando de dados.",nome,e);
+            e.printStackTrace();
+        }
+        return produtors;
+    }
+
+    public static PreparedStatement preparedStatementPesquisaPeloNome2(Connection connection,String nome)throws SQLException{
+        String sql = "SELECT * FROM anime_store.produtor WHERE nome LIKE ?;";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,String.format("%%%s%%",nome));
+        return ps;
+    }
+
+    public static void deletar2(int id){
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementDeletar2(connection,id)){
+            int novaLinha = ps.executeUpdate();
+            if (novaLinha > 0){
+                log.info("produto removido com sucesso.");
+                return;
+            }
+            log.warn("Erro ao deletar cadastro produtor com #ID '{}'",id);
+        }catch (SQLException e){
+            log.error("Erro ao deletar ID '{}'",id,e);
+            e.printStackTrace();
+        }
+    }
+
+    public static PreparedStatement preparedStatementDeletar2(Connection connection,int id) throws SQLException{
+        String sql = "DELETE FROM anime_store.produtor WHERE id = ?;";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1,id);
+        return ps;
+    }
+
+    public static void salvar2(Produtor produtor){
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementSalvar3(connection,produtor)){
+            int novaLinha = ps.executeUpdate();
+            if (novaLinha == 0){
+                log.warn("Atenção. Produtor com #ID:'{}' não foi cadastrado.",produtor.getId_produtor());
+                return;
+            }
+            log.info("Produtor #ID: '{}' cadastrado com sucesso.",produtor.getId_produtor());
+        }catch (SQLException e){
+            log.error("Erro ao cadastrar #ID: '{}' no banco de dados.",produtor.getId_produtor(),e);
+            e.printStackTrace();
+        }
+    }
+
+    public static PreparedStatement preparedStatementSalvar3(Connection connection, Produtor produtor) throws SQLException{
+        String sql = "INSERT INTO anime_store.produtor(nome) VALUES(?);";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setString(1,produtor.getNome());
+        return ps;
+    }
+
+
+    public static Optional<Produtor> pesquisaId2(int id){
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementPesquisaId2(connection,id);
+            ResultSet rs = ps.executeQuery()){
+            if (rs.next()) return Optional.empty();
+            return Optional.of(Produtor.ProducerBuilder
+                    .aProducer()
+                    .id_produtor(rs.getInt("id"))
+                    .build());
+        }catch (SQLException e){
+            log.error("Erro na pesquisa do ID '{}'",id,e);
+                    e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public static PreparedStatement preparedStatementPesquisaId2(Connection connection, int id) throws SQLException{
+        String sql = "SELECT * FROM anime_store.produtor WHERE id = ?;";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1,id);
+        return ps;
+    }
+
+
+    public static void atualizarDados(Produtor produtor){
+        try (Connection connection = ConnectionFactory.getConnection();
+            PreparedStatement ps = preparedStatementAtualizarCadastro(connection,produtor)){
+            int proximaLinha = ps.executeUpdate();
+            if (proximaLinha > 0){
+                log.info("Dados produtor '{}' atualizado com sucesso.",produtor.getNome());
+                return;
+            }
+            log.warn("Erro ao atualizadar dados do produtor '{}'",produtor.getNome());
+        }catch (SQLException e){
+            log.error("Erro ao atualizar dados produtor '{}' no banco de dados.",produtor.getNome(),e);
+            e.printStackTrace();
+        }
+    }
+
+    public static PreparedStatement preparedStatementAtualizarCadastro(Connection connection,Produtor produtor) throws SQLException{
+        String sql = "UPDATE anime_store.produtor  SET nome = ? WHERE id = ?;";
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1,produtor.getId_produtor());
+        ps.setString(2,produtor.getNome());
+        return ps;
+    }
+
+
+
+
+
+
+
+
 
 
 
