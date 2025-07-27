@@ -5,10 +5,10 @@ public class Produtor {
     private final String nome;
 
     private Produtor(Integer id_produtor, String nome) {
-        validacaoIDProdutor(id_produtor);
-        validacaoNomeProdutor(nome);
         this.id_produtor = id_produtor;
         this.nome = nome;
+        validacaoIDProdutor(id_produtor);
+        validacaoNomeProdutor(nome);
     }
 
     public Integer getId_produtor() {
