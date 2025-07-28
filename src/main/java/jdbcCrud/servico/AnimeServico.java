@@ -1,12 +1,10 @@
 package jdbcCrud.servico;
 
 import jdbcCrud.dominio.Anime;
-import jdbcCrud.dominio.Produtor;
 import jdbcCrud.repositorio.RepositorioAnime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -78,5 +76,67 @@ public class AnimeServico {
                 .build();
         RepositorioAnime.atualizarDados(anime);
     }
+
+    public static void pesquisaPorNome(){
+        log.info("Digite o nome do anime para efetuar a pesquisa ou digite:");
+        String nome = SCANNER.nextLine().trim();
+        List<Anime> animes = RepositorioAnime.pesquisaPorNome(nome);
+        animes.forEach(anime -> {
+            System.out.printf("#[%d] - %s  - %d", anime.getId(), anime.getNome(), anime.getEpisodeos());
+        });
+    }
+
+    public static void deletarDados(){
+        log.info("Digite o #ID do anime a ser excluido do sistema:");
+        int idSelecionado = Integer.parseInt(SCANNER.nextLine().trim());
+        log.warn("Realmente gostaria de excluir o cadastro #ID:'{}' (s/n)?",idSelecionado);
+        String confirmacao = SCANNER.nextLine().trim().toLowerCase();
+        if (confirmacao.equalsIgnoreCase("s")){
+            RepositorioAnime.deletar(idSelecionado);
+        }
+    }
+
+    public static void salvarDadosNoBancoDados(){
+        log.info("Digite o nome do anime a ser cadastrado:");
+        String nome = SCANNER.nextLine().trim();
+        Anime.validacaoNome(nome);
+        log.info("Digite a quantidade de episodeios:");
+        int episodeos = Integer.parseInt(SCANNER.nextLine().trim());
+        Anime.validacaoEpisodeos(episodeos);
+        Anime anime = Anime.AnimeBuilder.anAnime()
+                .nome(nome)
+                .episodeos(episodeos)
+                .build();
+        RepositorioAnime.salvar(anime);
+    }
+
+    public static void atualizarDadosAnime(){
+        log.info("Digite o id do anime:");
+        Optional<Anime> optionalAnime = RepositorioAnime.pesquisaPorID(Integer.parseInt(SCANNER.nextLine().trim()));
+        if (optionalAnime.isEmpty()){
+            return;
+        }
+        Anime animeEncontrado = optionalAnime.get();
+        log.info("Digite o novo nome do anime:");
+        String novoNome = SCANNER.nextLine().trim();
+        novoNome = novoNome.isEmpty() ? animeEncontrado.getNome() : novoNome;
+        log.info("Digite a quantidade de episodeos:");
+        int novosEpisodeos = Integer.parseInt(SCANNER.nextLine().trim());
+        Anime anime = Anime.AnimeBuilder.anAnime()
+                .id(animeEncontrado.getId())
+                .nome(novoNome)
+                .episodeos(novosEpisodeos)
+                .build();
+        RepositorioAnime.atualizarDados(anime);
+    }
+
+
+
+
+
+
+
+
+
 
 }

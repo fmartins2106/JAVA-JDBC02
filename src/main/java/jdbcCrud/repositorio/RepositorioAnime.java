@@ -85,9 +85,10 @@ public class RepositorioAnime {
     }
 
     public static PreparedStatement preparedStatementSalvarAnime(Connection connection, Anime anime) throws SQLException {
-        String sql = "INSERT INTO anime_store.anime(nome) VALUES(?);";
+        String sql = "INSERT INTO anime_store.anime(nome,episodeos) VALUES(?,?);";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, anime.getNome());
+        ps.setInt(2,anime.getEpisodeos());
         return ps;
     }
 
