@@ -27,7 +27,9 @@ public class AnimeServico {
         log.info("Digite o nome do anime que gostaria de pesquisar ou enter para mostrar todos:");
         String nome = SCANNER.nextLine().trim();
         List<Anime> animes = RepositorioAnime.pesquisaPorNome(nome);
-        animes.forEach(anime -> System.out.printf("[%d] - %s \n",anime.getId(),anime.getNome()));
+        animes.forEach(anime -> {
+            System.out.printf("#[%d] - %s  - %d", anime.getId(), anime.getNome(), anime.getEpisodeos());
+        });
     }
 
     public static void deletarCadastro(){
@@ -76,7 +78,7 @@ public class AnimeServico {
                 .build();
         RepositorioAnime.atualizarDados(anime);
     }
-
+//________________________________________________________________________________________________
     public static void pesquisaPorNome(){
         log.info("Digite o nome do anime para efetuar a pesquisa ou digite:");
         String nome = SCANNER.nextLine().trim();
@@ -129,6 +131,68 @@ public class AnimeServico {
                 .build();
         RepositorioAnime.atualizarDados(anime);
     }
+//    ______________________________________________________________________________________________________
+
+    public static void pesquisaNome(){
+        log.info("Digite o nome do anime ou enter para listar todos:");
+        String nome = SCANNER.nextLine().trim();
+        List<Anime> animes = RepositorioAnime.pesquisaPorNome(nome);
+        if (nome.isEmpty()){
+            animes.forEach(anime -> log.info("[{}] - {}  - {}\n", anime.getId(), anime.getNome(), anime.getEpisodeos()));
+        }
+    }
+
+    public static void deletarDados2(){
+        log.info("Digite o #ID do anime a ser deletado:");
+        int id = Integer.parseInt(SCANNER.nextLine().trim());
+        log.warn("Realmente deseja excluir os dados do ID '{}' ?(S|N)",id);
+        String escolha = SCANNER.nextLine().trim().toLowerCase().trim().trim();
+        if (escolha.equalsIgnoreCase("s")){
+            RepositorioAnime.deletar(id);
+        }
+    }
+
+    public static void salvarNovoCadastro2(){
+        log.info("Digite o nome do anime:");
+        String nomeAnime = SCANNER.nextLine().trim();
+        Anime.validacaoNome(nomeAnime);
+        log.info("Digite a quantidade de episodeos:");
+        int eposodeos = Integer.parseInt(SCANNER.nextLine().trim());
+        Anime.validacaoEpisodeos(eposodeos);
+        Anime anime = Anime.AnimeBuilder.anAnime()
+                .nome(nomeAnime)
+                .episodeos(eposodeos)
+                .build();
+        RepositorioAnime.salvar(anime);
+    }
+
+    public static void atualizarDadosAnime2(){
+        log.info("Digite o #ID do anime a ser atualizado:");
+        Optional<Anime> optionalIdAnime = RepositorioAnime.pesquisaPorID(Integer.parseInt(SCANNER.nextLine().trim()));
+        if (optionalIdAnime.isEmpty()){
+            log.info("#ID inválido.Verifique.");
+            return;
+        }
+        Anime animeEncontrado = optionalIdAnime.get();
+        log.info("Digite o novo nome do anime ou enter para manter:");
+        String novoNome = SCANNER.nextLine().trim();
+        novoNome = novoNome.isEmpty() ? animeEncontrado.getNome() : novoNome;
+        log.info("Digite a quantidade de episodeos:");
+        int episodeos = Integer.parseInt(SCANNER.nextLine().trim());
+        Anime.validacaoEpisodeos(episodeos);
+        Anime anime = Anime.AnimeBuilder.anAnime()
+                .nome(novoNome)
+                .episodeos(episodeos)
+                .build();
+        RepositorioAnime.atualizarDados(anime);
+    }
+
+
+
+
+
+
+
 
 
 
