@@ -20,8 +20,9 @@ public class Produtor {
     }
 
     public static void validacaoIDProdutor(Integer id_produtor){
-        if (id_produtor <= 0 ){
-            throw new IllegalArgumentException("Erro. ID produtor não pode ser menor que zero.");
+        // Se for null, não há o que validar (caso novo ainda não salvo)
+        if (id_produtor != null && id_produtor < 0) {
+            throw new IllegalArgumentException("Erro: o ID do produtor não pode ser negativo.");
         }
     }
 

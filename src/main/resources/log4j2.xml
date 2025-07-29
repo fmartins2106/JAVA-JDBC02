@@ -7,7 +7,7 @@
     </Appenders>
     <Loggers>
         <!-- avoid duplicated logs with additivity=false -->
-        <Logger name="JDCB" level="debug" additivity="false">
+        <Logger name="jdbcCrud" level="debug" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="error">

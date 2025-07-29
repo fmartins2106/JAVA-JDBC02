@@ -15,7 +15,7 @@ public class ConnectionFactory {
     private static final Logger log = LogManager.getLogger(ConnectionFactory.class);
 
     public static Connection getConnection(){
-       String url = "jdbc:postgresql://localhost:5433/minha_base";
+       String url = "jdbc:postgresql://localhost:5434/java_jdbc2";
        String username = "fmartins";
        String password = "masterkey";
        try {

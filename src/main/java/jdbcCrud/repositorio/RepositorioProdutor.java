@@ -19,7 +19,6 @@ public class RepositorioProdutor {
     private static final Logger log = LogManager.getLogger(RepositorioProdutor.class);
 
     public static List<Produtor> pesquisaPorNome(String nome) { // Método público e estático que retorna uma lista de Produtor com base no nome informado
-        log.info("Pesquisa pelo nome do produtor '{}'", nome); // Registra no log uma mensagem informando o nome que será pesquisado
         String sql = "SELECT * FROM anime_store.produtor WHERE nome LIKE ?"; // Query SQL com LIKE (busca por nome parcial usando parâmetro)
         List<Produtor> produtores = new ArrayList<>(); // Cria uma lista para armazenar os produtores encontrados
         try (
@@ -30,7 +29,7 @@ public class RepositorioProdutor {
             while (rs.next()) { // Percorre cada linha retornada pela query
                 Produtor produtor = Produtor.ProducerBuilder // Usa um builder para criar um objeto Produtor
                         .aProducer() // Inicia a construção do Produtor
-                        .id_produtor(rs.getInt("id")) // Seta o ID a partir da coluna "id" do banco
+                        .id_produtor(rs.getInt("id_produtor")) // Seta o ID a partir da coluna "id" do banco
                         .nome(rs.getString("nome")) // Seta o nome a partir da coluna "nome"
                         .build(); // Finaliza a criação do objeto Produtor
                 produtores.add(produtor); // Adiciona o produtor à lista de retorno
@@ -51,7 +50,7 @@ public class RepositorioProdutor {
 
 
     public static void delete(int id) {
-        String sql = "DELETE FROM anime_stores.produtor WHERE id = ?;";
+        String sql = "DELETE FROM anime_store.produtor WHERE id_produtor = ?;";
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement ps = preparedStatementDelete(connection, sql, id)) {
             int produtorEncontrado = ps.executeUpdate();
@@ -88,7 +87,7 @@ public class RepositorioProdutor {
     }
 
     public static PreparedStatement preparedStatementSalvar2(Connection connection, Produtor produtor) throws SQLException {
-        String sql = "INSERT INTO anime_store.produtor (name) values (?);";
+        String sql = "INSERT INTO anime_store.produtor(nome) values(?);";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1, produtor.getNome());
         return ps;
@@ -103,7 +102,7 @@ public class RepositorioProdutor {
             if (!rs.next()) return Optional.empty();
             return Optional.of(Produtor.ProducerBuilder
                     .aProducer()
-                    .id_produtor(rs.getInt("id"))
+                    .id_produtor(rs.getInt("id_produtor"))
                     .nome(rs.getString("nome"))
                     .build());
         }catch (SQLException e){
@@ -136,7 +135,7 @@ public class RepositorioProdutor {
     }
     
     public static PreparedStatement preparedStatementAtualizacao(Connection connection, Produtor produtor) throws SQLException{
-        String sql = "UPDATE anime_store.produtor  SET nome = ? WHERE id = ?";
+        String sql = "UPDATE anime_store.produtor  SET nome = ? WHERE id_produtor = ?";
         PreparedStatement ps = connection.prepareStatement(sql);
         ps.setString(1,produtor.getNome());
         ps.setInt(2,produtor.getId_produtor());
